@@ -5,13 +5,14 @@ const database = require('../api/database.js');
 router.post('/login', function (req, res, next) {
   let acc = req.body.a;
   let pass = req.body.p;
-  console.log(acc,pass);
+  console.log(acc, pass);
   database.Retrieve(' \
     SELECT BELONG,POWER \
     FROM Users \
     WHERE ACCOUNT=? AND PASSWORD=?; \
-  ',[acc, pass]);
-  res.render('index', { title: 'Express' });
+  ', [acc, pass], (result) => {
+    res.send(result);
+  });
 });
 
 module.exports = router;
