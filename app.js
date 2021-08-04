@@ -7,6 +7,7 @@ var cors = require('cors');
 
 var indexRouter = require('./routes/index');
 var studentsRouter = require('./routes/student');
+var labadminerRouter = require('./routes/lab_adminer');
 
 var app = express();
 
@@ -25,6 +26,7 @@ app.use(express.urlencoded({ extended: false }))//获取post body
 
 app.use('/', indexRouter);
 app.use('/student', studentsRouter);
+app.use('/lab', labadminerRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
