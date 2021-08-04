@@ -1,8 +1,16 @@
 var express = require('express');
 var router = express.Router();
+const database = require('../api/database.js');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
+router.post('/login', function (req, res, next) {
+  let acc = req.body.a;
+  let pass = req.body.p;
+  console.log(acc,pass);
+  database.Retrieve(' \
+    SELECT BELONG,POWER \
+    FROM Users \
+    WHERE ACCOUNT=? AND PASSWORD=?; \
+  ',[acc, pass]);
   res.render('index', { title: 'Express' });
 });
 
