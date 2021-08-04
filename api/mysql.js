@@ -10,6 +10,7 @@ let connection=mysql.createConnection(db_config);
 
 //开始连接数据库
 const startLink = function(){
+    connection=mysql.createConnection(db_config);
     connection.connect(function(err){
         if(err){
             console.log(`mysql连接失败: ${err}!`);
