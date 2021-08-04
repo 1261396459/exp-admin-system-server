@@ -6,7 +6,7 @@ var logger = require('morgan');
 var cors = require('cors');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var studentsRouter = require('./routes/student');
 
 var app = express();
 
@@ -24,7 +24,7 @@ app.use(cors());//跨域
 app.use(express.urlencoded({ extended: false }))//获取post body
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/student', studentsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
