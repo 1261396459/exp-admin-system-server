@@ -34,24 +34,28 @@ const Query = function (mode,sql,sqlParams,success) {
 module.exports = {
     // CURD
     // 使用params而不是sql拼接，防sql注入
-    Create(addSql, addSqlParams) {
+    Create(addSql, addSqlParams, success) {
         Query('INSERT',addSql, addSqlParams, (res)=>{
             console.log('INSERT ID:', res);
+            success(res);
         });
     },
-    Delete(delSql, delSqlParams) {
+    Delete(delSql, delSqlParams, success) {
         Query('DELETE', delSql, delSqlParams, (res)=>{
             console.log('DELETE affectedRows', res.affectedRows);
+            success(res);
         });
     },
-    Retrieve(retSql, retSqlParams) {
+    Retrieve(retSql, retSqlParams, success) {
         Query('SELECT', retSql, retSqlParams, (res)=>{
             console.log(res);
+            success(res);
         });
     },
-    Update(modSql, modSqlParams) {
+    Update(modSql, modSqlParams, success) {
         Query('UPDATE', modSql, modSqlParams, (res)=>{
             console.log('UPDATE affectedRows', res.affectedRows);
+            success(res);
         });
     }
 }
