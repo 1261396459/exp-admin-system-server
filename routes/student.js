@@ -6,14 +6,16 @@ const database = require('../api/database.js');
 router.get('/courses', function (req, res, next) {
   let stuid = req.query.uid;
   console.log(stuid);
-  database.Retrieve(`SELECT *
-  FROM \`实验小课表\`
-  WHERE EID IN(
-    SELECT EID
-    FROM students
-    NATURAL JOIN exptoclass
-    WHERE STID=?
-  );`, 
+  database.Retrieve(`
+    SELECT *
+    FROM \`实验小课表\`
+    WHERE EID IN(
+      SELECT EID
+      FROM students
+      NATURAL JOIN exptoclass
+      WHERE STID=?
+    );
+  `, 
   [stuid], (result) => {
     res.send(result);
   });
@@ -23,14 +25,16 @@ router.get('/courses', function (req, res, next) {
 router.get('/sign-all', function (req, res, next) {
   let stuid = req.query.uid;
   console.log(stuid);
-  database.Retrieve(`SELECT APID,EID
-  FROM \`班级签到进行表\`
-  WHERE CLNAME IN(
-    SELECT CLNAME
-    FROM students
-    NATURAL JOIN exptoclass
-    WHERE STID=?
-  );`, 
+  database.Retrieve(`
+    SELECT APID,EID
+    FROM \`班级签到进行表\`
+    WHERE CLNAME IN(
+      SELECT CLNAME
+      FROM students
+      NATURAL JOIN exptoclass
+      WHERE STID=?
+    );
+  `, 
   [stuid], (result) => {
     res.send(result);
   });
@@ -41,9 +45,10 @@ router.get('/sign-already', function (req, res, next) {
   let stuid = req.query.uid;
   console.log(stuid);
   database.Retrieve(`
-  SELECT APEID,TIME
-  FROM signin
-  WHERE STID=?;`, 
+    SELECT APEID,TIME
+    FROM signin
+    WHERE STID=?;
+  `, 
   [stuid], (result) => {
     res.send(result);
   });
@@ -55,9 +60,10 @@ router.post('/tosign', function (req, res, next) {
   let stuid = req.body.uid;
   console.log(apid,stuid);
   database.Create(`
-  INSERT Signin(APEID,STID)
-  VALUES
-  (?,?);`, 
+    INSERT Signin(APEID,STID)
+    VALUES
+    (?,?);
+  `, 
   [apid, stuid], (result) => {
     res.send(result);
   });
