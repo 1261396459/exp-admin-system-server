@@ -7,14 +7,17 @@ router.get('/courses', function (req, res, next) {
   let stuid = req.query.uid;
   console.log(stuid);
   database.Retrieve(`
-    SELECT *
-    FROM \`实验小课表\`
+    SELECT EID,CNAME,TNAME,LNAME,APTIME AS TIME
+    FROM \`实验小课表\`AS ExpSmall
+    LEFT JOIN Couinfor ON Couinfor.CID=ExpSmall.EID
+    LEFT JOIN Teachers ON Teachers.TID=Couinfor.TID
     WHERE EID IN(
       SELECT EID
       FROM students
       NATURAL JOIN exptoclass
       WHERE STID=?
-    );
+    )
+    ORDER BY TIME ASC;
   `, 
   [stuid], (result) => {
     res.send(result);
@@ -26,8 +29,11 @@ router.get('/sign-all', function (req, res, next) {
   let stuid = req.query.uid;
   console.log(stuid);
   database.Retrieve(`
-    SELECT APID,EID
-    FROM \`班级签到进行表\`
+    SELECT ClassSign.APID,ClassSign.EID,CNAME,TNAME,APTIME AS TIME,LNAME
+    FROM \`班级签到进行表\`AS ClassSign
+    LEFT JOIN Couinfor ON Couinfor.CID=ClassSign.EID
+    LEFT JOIN Teachers ON Teachers.TID=Couinfor.TID
+    LEFT JOIN Application ON Application.APID=ClassSign.APID
     WHERE CLNAME IN(
       SELECT CLNAME
       FROM students
