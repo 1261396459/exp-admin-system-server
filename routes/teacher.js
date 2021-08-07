@@ -35,6 +35,21 @@ router.get('/can-big', function (req, res, next) {
     });
 });
 
+// 查看课程可以选择的班级
+router.get('/can-big-class', function (req, res, next) {
+    let cid = req.query.cid;
+    console.log(cid);
+    database.Retrieve(`
+        SELECT ID,EID,Exptoclass.CLNAME,CLPNUM
+        FROM Exptoclass
+        LEFT JOIN \`班级人数表\`AS CLassNUM ON CLassNUM.CLNAME=Exptoclass.CLNAME
+        WHERE EID=?;
+    `,
+    [cid], (result) => {
+        res.send(result);
+    });
+});
+
 // 创建/修改实验大课信息
 router.put('/to-big', function (req, res, next) {
     let cid = req.body.id;
@@ -55,9 +70,15 @@ router.get('/application', function (req, res, next) {
     let tid = req.query.uid;
     console.log(tid);
     database.Retrieve(`
-        SELECT *
+        SELECT Application.*,CLNs,CNAME
         FROM Application
-        WHERE EID IN (
+        LEFT JOIN(
+            SELECT EID,GROUP_CONCAT(CLNAME) AS CLNs
+            FROM Exptoclass
+            GROUP BY EID
+        )AS CLofE ON CLofE.EID=Application.EID
+        LEFT JOIN Couinfor ON Couinfor.CID=Application.EID
+        WHERE Application.EID IN (
             SELECT CID
             FROM Couinfor
             WHERE TID=?
