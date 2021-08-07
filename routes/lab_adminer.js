@@ -87,8 +87,8 @@ router.post('/add-lab-course', function (req, res, next) {
 
 // 删除实验室支持课程
 router.delete('/del-lab-course', function (req, res, next) {
-    let eid = req.body.eid;
-    let lab = req.body.lab;
+    let eid = req.query.eid;
+    let lab = req.query.lab;
     console.log(eid,lab);
     database.Delete(`
         DELETE FROM Supports
