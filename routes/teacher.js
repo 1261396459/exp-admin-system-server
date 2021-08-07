@@ -37,8 +37,8 @@ router.get('/can-big', function (req, res, next) {
 
 // 创建/修改实验大课信息
 router.put('/to-big', function (req, res, next) {
-    let cid = req.query.id;
-    let cnum = req.query.number;
+    let cid = req.body.id;
+    let cnum = req.body.number;
     console.log(cid, cnum);
     database.Update(`
         UPDATE Couinfor
@@ -103,9 +103,15 @@ router.get('/small', function (req, res, next) {
     let eid = req.query.id;
     console.log(eid);
     database.Retrieve(`
-        SELECT *
-        FROM \`实验小课表\`
-        WHERE EID=?;
+        SELECT Small.*,SNUM,CPNUM
+        FROM \`实验小课表\` AS Small
+        LEFT JOIN(
+            SELECT APEID,COUNT(STID)AS SNUM
+            FROM Signin
+            GROUP BY APEID
+        )AS SignS ON SignS.APEID=Small.APID
+        LEFT JOIN \`实验课人数表\`AS NumS ON NumS.EID=Small.EID
+        WHERE Small.EID=?;
     `,
     [eid], (result) => {
         res.send(result);
