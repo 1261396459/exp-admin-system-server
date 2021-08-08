@@ -1,8 +1,8 @@
 var mysql = require('mysql')
 const db_config = {
-    host: "localhost",
-    user: "root",
-    password: "",
+    host: "120.79.168.124",
+    user: "cloud",
+    password: "yhd",
     port: "3306",
     database: "exp_admin_system"
 }
