@@ -7,14 +7,14 @@ router.get('/my-labs', function (req, res, next) {
     let tid = req.query.uid;
     console.log(tid);
     database.Retrieve(`
-        SELECT Labinfor.LNAME,SPN,SPCs
-        FROM Labinfor
+        SELECT LabInfor.LNAME,SPN,SPCs
+        FROM LabInfor
         LEFT JOIN(
             SELECT LNAME,GROUP_CONCAT(CNAME,'(',SPC,')')AS SPCs
             FROM Supports
-            LEFT JOIN Couinfor ON Couinfor.CID=Supports.SPC
+            LEFT JOIN CouInfor ON CouInfor.CID=Supports.SPC
             GROUP BY LNAME
-        )AS Temp ON Temp.LNAME=Labinfor.LNAME
+        )AS Temp ON Temp.LNAME=LabInfor.LNAME
         WHERE AMTID=?;
     `,
     [tid], (result) => {
@@ -29,9 +29,9 @@ router.get('/lab-sup', function (req, res, next) {
     database.Retrieve(`
         SELECT SPC AS CID,CNAME
         FROM Supports
-        LEFT JOIN Couinfor ON Couinfor.CID=Supports.SPC
+        LEFT JOIN CouInfor ON CouInfor.CID=Supports.SPC
         WHERE LNAME=?;
-  `,
+    `,
     [lname], (result) => {
         res.send(result);
     });
@@ -43,13 +43,13 @@ router.get('/lab-nsup', function (req, res, next) {
     console.log(lname);
     database.Retrieve(`
         SELECT CID,CNAME
-        FROM Couinfor
+        FROM CouInfor
         WHERE CID NOT IN(
             SELECT SPC
             FROM Supports
             WHERE LNAME=?
         );
-  `,
+    `,
     [lname], (result) => {
         res.send(result);
     });
@@ -61,7 +61,7 @@ router.put('/upd-lab-number', function (req, res, next) {
     let lab = req.body.lab;
     console.log(number,lab);
     database.Update(`
-        UPDATE Labinfor
+        UPDATE LabInfor
         SET SPN=?
         WHERE LNAME=?;
     `,
@@ -106,10 +106,10 @@ router.get('/application', function (req, res, next) {
     database.Retrieve(`
         SELECT Application.*,CNAME,SPN,ExpNum.CPNUM
         FROM Application
-        LEFT JOIN Labinfor ON Labinfor.LNAME=Application.LNAME
-        LEFT JOIN Couinfor ON Couinfor.CID=Application.EID
+        LEFT JOIN LabInfor ON LabInfor.LNAME=Application.LNAME
+        LEFT JOIN CouInfor ON CouInfor.CID=Application.EID
         LEFT JOIN \`实验课人数表\`AS ExpNum ON ExpNum.EID=Application.EID
-        WHERE Labinfor.AMTID=?;
+        WHERE LabInfor.AMTID=?;
     `,
     [tid], (result) => {
         res.send(result);
@@ -121,7 +121,7 @@ router.put('/agree-application', function (req, res, next) {
     let apid = req.body.apid;
     console.log(apid);
     database.Update(`
-        UPDATE application
+        UPDATE Application
         SET RESULT='3'
         WHERE APID=?;
     `,
@@ -136,7 +136,7 @@ router.put('/disagree-application', function (req, res, next) {
     let comment = req.body.comment;
     console.log(apid,comment);
     database.Update(`
-        UPDATE application
+        UPDATE Application
         SET RESULT='2',APCOMMENT=?
         WHERE APID=?;
     `,

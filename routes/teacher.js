@@ -8,12 +8,12 @@ router.get('/big', function (req, res, next) {
     console.log(tid);
     database.Retrieve(`
         SELECT CID,CNAME,CNUM,CLNs,LinkIDs
-        FROM Couinfor
+        FROM CouInfor
         LEFT JOIN(
             SELECT EID,GROUP_CONCAT(CLNAME)AS CLNs,GROUP_CONCAT(ID)AS LinkIDs
-            FROM exptoclass
+            FROM ExpToClass
             GROUP BY EID
-        )AS Temp ON Temp.EID=Couinfor.CID
+        )AS Temp ON Temp.EID=CouInfor.CID
         WHERE TID=? AND CNUM IS NOT NULL;
     `,
     [tid], (result) => {
@@ -27,9 +27,9 @@ router.get('/can-big', function (req, res, next) {
     console.log(tid);
     database.Retrieve(`
         SELECT CID,CNAME
-        FROM Couinfor
+        FROM CouInfor
         WHERE TID=? AND CNUM IS NULL;
-    `,
+        `,
     [tid], (result) => {
         res.send(result);
     });
@@ -40,9 +40,9 @@ router.get('/can-big-class', function (req, res, next) {
     let cid = req.query.cid;
     console.log(cid);
     database.Retrieve(`
-        SELECT ID,EID,Exptoclass.CLNAME,CLPNUM
-        FROM Exptoclass
-        LEFT JOIN \`班级人数表\`AS CLassNUM ON CLassNUM.CLNAME=Exptoclass.CLNAME
+        SELECT ID,EID,ExpToClass.CLNAME,CLPNUM
+        FROM ExpToClass
+        LEFT JOIN \`班级人数表\`AS CLassNUM ON CLassNUM.CLNAME=ExpToClass.CLNAME
         WHERE EID=?;
     `,
     [cid], (result) => {
@@ -56,7 +56,7 @@ router.put('/to-big', function (req, res, next) {
     let cnum = req.body.number;
     console.log(cid, cnum);
     database.Update(`
-        UPDATE Couinfor
+        UPDATE CouInfor
         SET CNUM=?
         WHERE CID=?;
     `,
@@ -74,14 +74,14 @@ router.get('/application', function (req, res, next) {
         FROM Application
         LEFT JOIN(
             SELECT EID,GROUP_CONCAT(CLNAME) AS CLNs
-            FROM Exptoclass
+            FROM ExpToClass
             GROUP BY EID
         )AS CLofE ON CLofE.EID=Application.EID
-        LEFT JOIN Couinfor ON Couinfor.CID=Application.EID
+        LEFT JOIN CouInfor ON CouInfor.CID=Application.EID
         WHERE Application.EID IN (
-            SELECT CID
-            FROM Couinfor
-            WHERE TID=?
+                SELECT CID
+                FROM CouInfor
+                WHERE TID=?
         );
     `,
     [tid], (result) => {
@@ -110,7 +110,7 @@ router.post('/add-application', function (req, res, next) {
     let aptime = req.body.time;
     console.log(eid, lab, aptime);
     database.Create(`
-        INSERT application(LNAME,EID,APTIME)
+        INSERT Application(LNAME,EID,APTIME)
         VALUES
         (?,?,?);
     `,

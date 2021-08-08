@@ -9,12 +9,12 @@ router.get('/courses', function (req, res, next) {
   database.Retrieve(`
     SELECT EID,CNAME,TNAME,LNAME,APTIME AS TIME
     FROM \`实验小课表\`AS ExpSmall
-    LEFT JOIN Couinfor ON Couinfor.CID=ExpSmall.EID
-    LEFT JOIN Teachers ON Teachers.TID=Couinfor.TID
+    LEFT JOIN CouInfor ON CouInfor.CID=ExpSmall.EID
+    LEFT JOIN Teachers ON Teachers.TID=CouInfor.TID
     WHERE EID IN(
       SELECT EID
-      FROM students
-      NATURAL JOIN exptoclass
+      FROM Students
+      NATURAL JOIN ExpToClass
       WHERE STID=?
     )
     ORDER BY TIME ASC;
@@ -31,13 +31,13 @@ router.get('/sign-all', function (req, res, next) {
   database.Retrieve(`
     SELECT ClassSign.APID,ClassSign.EID,CNAME,TNAME,APTIME AS TIME,LNAME
     FROM \`班级签到进行表\`AS ClassSign
-    LEFT JOIN Couinfor ON Couinfor.CID=ClassSign.EID
-    LEFT JOIN Teachers ON Teachers.TID=Couinfor.TID
+    LEFT JOIN CouInfor ON CouInfor.CID=ClassSign.EID
+    LEFT JOIN Teachers ON Teachers.TID=CouInfor.TID
     LEFT JOIN Application ON Application.APID=ClassSign.APID
     WHERE CLNAME IN(
       SELECT CLNAME
-      FROM students
-      NATURAL JOIN exptoclass
+      FROM Students
+      NATURAL JOIN ExpToClass
       WHERE STID=?
     );
   `, 
@@ -52,7 +52,7 @@ router.get('/sign-already', function (req, res, next) {
   console.log(stuid);
   database.Retrieve(`
     SELECT APEID,TIME
-    FROM signin
+    FROM Signin
     WHERE STID=?;
   `, 
   [stuid], (result) => {
