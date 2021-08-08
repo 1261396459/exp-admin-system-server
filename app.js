@@ -23,10 +23,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 const corsConfig = {
-  origin: '*', //允许访问来源
+  origin: ['http://127.0.0.1:40000','http://localhost:40000'], //允许访问来源
   optionsSuccessStatus: 200 
 }
-app.use(cors());//跨域
+app.use(cors(corsConfig));//跨域
 app.use(express.urlencoded({ extended: false }))//获取post body
 
 app.use('/', indexRouter);
